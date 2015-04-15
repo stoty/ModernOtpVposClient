@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="ISO-8859-2"?>
+<xs:schema xmlns="otp.iqsys.hu" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="otp.iqsys.hu" elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <xs:include schemaLocation="./mwtypes.xsd"/>
+  <xs:element name="answer">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="resultset"/>
+        <xs:element ref="messagelist"/>
+        <xs:element ref="infolist" minOccurs="0"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="resultset">
+    <xs:annotation>
+      <xs:documentation>Válaszadatok</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="record" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="messagelist">
+    <xs:annotation>
+      <xs:documentation>Hibakódok listája</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="message" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="infolist">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="info" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="info" type="xs:string"/>
+  <xs:element name="record">
+    <xs:annotation>
+      <xs:documentation>Fizetési tranzakció adatai</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="posid"/>
+        <xs:element ref="transactionid"/>
+        <xs:element ref="posresponsecode"/>
+        <xs:element ref="authorizationcode"/>
+        <xs:element ref="timestamp"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="message" type="xs:string">
+    <xs:annotation>
+      <xs:documentation>Válaszkód szövege</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:element name="posid" type="WebShopPosId">
+    <xs:annotation>
+      <xs:documentation>Shop azonosító</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:element name="transactionid" type="WebShopTransactionId">
+    <xs:annotation>
+      <xs:documentation>Egyedi tranzakció azonosító</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:element name="posresponsecode" type="xs:string">
+    <xs:annotation>
+      <xs:documentation>Pos válaszkód</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:element name="authorizationcode" type="xs:string">
+    <xs:annotation>
+      <xs:documentation>Autorizációs kód</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:element name="timestamp">
+    <xs:annotation>
+      <xs:documentation>Tranzakciós időpecsét.</xs:documentation>
+    </xs:annotation>
+    <xs:simpleType>
+      <xs:restriction base="xs:string">
+        <xs:pattern value="\d{4}\.\d{2}\.\d{2} \d{2}\.\d{2}\.\d{2} \d{3}"/>
+      </xs:restriction>
+    </xs:simpleType>
+  </xs:element>
+</xs:schema>

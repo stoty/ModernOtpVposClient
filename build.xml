@@ -1,0 +1,74 @@
+<project name="ModernOTPVposCClient" default="dist" basedir=".">
+	<description>
+        OTP Vpos client
+    </description>
+	<!-- set global properties for this build -->
+	<property name="src" location="src"/>
+	<property name="generated-src" location="generated-src"/>
+	<property name="build" location="build"/>
+	<property name="dist"  location="dist"/>
+	<property name="src.xsd"  location="resources/"/>
+	<property name="xjc"  location="/usr/bin/xjc"/>
+
+
+
+	<target name="init">
+		<!-- Create the time stamp -->
+		<tstamp/>
+		<!-- Create the build directory structure used by compile -->
+		<mkdir dir="${build}"/>
+	</target>
+
+	<target name="compile" depends="init, jaxb-generate"
+        description="compile the source " >
+		<!-- Compile the java code from ${src} into ${build} -->
+		<javac destdir="${build}">
+			<src path="${src}"/>
+			<src path="${generated-src}"/>			
+		</javac>
+	</target>
+	
+	<target name="jaxb-generate" depends="init">
+		<mkdir dir="${generated-src}"/>
+        <xjc package="hu.iqsys.otp.webshopfizetes.output" xsdfile="WEBSHOPFIZETES_output.xsd" bindingsfile="WEBSHOPFIZETES_output-binding.xml"/>
+   		<xjc package="hu.iqsys.otp.webshopfizetes.input" xsdfile="WEBSHOPFIZETES.xsd" bindingsfile="WEBSHOPFIZETES-binding.xml"/>
+    	<xjc package="hu.iqsys.otp.webshoptranzakciolekerdezes.output" xsdfile="WEBSHOPTRANZAKCIOLEKERDEZES_output.xsd" bindingsfile="WEBSHOPTRANZAKCIOLEKERDEZES_output-binding.xml"/>
+    	<xjc package="hu.iqsys.otp.webshoptranzakciolekerdezes.input" xsdfile="WEBSHOPTRANZAKCIOLEKERDEZES.xsd" bindingsfile="WEBSHOPTRANZAKCIOLEKERDEZES-binding.xml"/>	
+	</target>
+
+	<macrodef name="xjc" description="....">
+		<attribute name="package" default="NOT SET"/>
+		<attribute name="xsdfile" default="NOT SET"/>
+		<attribute name="bindingsfile" default="NOT SET"/>
+		<sequential>
+			<exec executable="${xjc}">
+				<arg value="-d"/>
+				<arg value="${generated-src}"/>
+				<arg value="-p"/>
+				<arg value="@{package}"/>
+				<arg value="-b"/>
+				<arg value="${src.xsd}/@{bindingsfile}"/>
+				<arg value="${src.xsd}/@{xsdfile}"/>
+			</exec>
+		</sequential>
+	</macrodef>
+
+	<target name="dist" depends="compile" 
+		
+		
+        description="generate the distribution" >
+		<!-- Create the distribution directory -->
+		<mkdir dir="${dist}/lib"/>
+
+		<!-- Put everything in ${build} into the MyProject-${DSTAMP}.jar file -->
+		<jar jarfile="${dist}/lib/ModernOtpVposClient.jar" basedir="${build}"/>
+	</target>
+
+	<target name="clean"
+        description="clean up" >
+		<!-- Delete the ${build} and ${dist} directory trees -->
+		<delete dir="${build}"/>
+		<delete dir="${dist}"/>
+	</target>
+
+</project>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="ISO-8859-2"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+    elementFormDefault="unqualified" attributeFormDefault="unqualified">
+  <xs:simpleType name="BooleanType">
+    <xs:annotation>
+      <xs:documentation> Logikai érték</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="TRUE"/>
+      <xs:enumeration value="FALSE"/>
+      <xs:enumeration value="true"/>
+      <xs:enumeration value="false"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="DateTime">
+    <xs:annotation>
+      <xs:documentation>Dátum id�' típus</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:pattern value="\d{4}[.]\d{2}[.]\d{2} \d{2}:\d{2}:\d{2}"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="DateTimeOutput">
+    <xs:annotation>
+      <xs:documentation>Outputk�cnt használatos dátum id�' típus</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:pattern value="\d{14}"/>
+      <xs:pattern value="\d{0}"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="TransactionIdType">
+    <xs:annotation>
+	<xs:documentation>Tranzakcio azonosito ertek</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:pattern value="([0-9][A-Z][a-z]){1,32}"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="WebShopTransactionId">
+    <xs:annotation>
+      <xs:documentation>WebShop fizetési tranzakció azonositó</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:maxLength value="32"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="WebShopPosId">
+    <xs:annotation>
+      <xs:documentation>WebShop fizetési tranzakció azonositó</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:pattern value="022\d{5}|#022\d{5}"/>
+    </xs:restriction>
+  </xs:simpleType>
+</xs:schema>

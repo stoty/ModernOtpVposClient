@@ -1,0 +1,77 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="otp.iqsys.hu" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="otp.iqsys.hu" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:annotation>
+		<xs:documentation>WebShop fizetés lezárás folyamat</xs:documentation>
+	</xs:annotation>
+	<xs:include schemaLocation="mwtypes.xsd"/>
+	<xs:element name="StartWorkflow">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="TemplateName" type="xs:string"/>
+				<xs:element name="Variables">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element ref="isPOSID"/>
+							<xs:element ref="isTransactionID"/>
+							<xs:element ref="isClientCode"/>
+							<xs:element ref="isApproval"/>
+							<xs:element ref="isAmount" minOccurs="0"/>
+							<xs:element name="isClientSignature" type="isClientSignatureType"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="isPOSID" type="WebShopPosId">
+		<xs:annotation>
+			<xs:documentation>Shop azonosító</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="isTransactionID" type="WebShopTransactionId">
+		<xs:annotation>
+			<xs:documentation>Tranzakció azonosító.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="isAmount" type="xs:integer">
+		<xs:annotation>
+			<xs:documentation>Fizetés lezárás összege. Egész érték.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="isApproval" type="BooleanType">
+		<xs:annotation>
+			<xs:documentation>Jóváhagyás vagy feloldás</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="isClientCode">
+		<xs:annotation>
+			<xs:documentation>A Bank szolgáltatását igénybe vevő kliens kódja. A Fizetőfelület esetében ez mindig WEBSHOP értékű. BRO esetén UGYFELKARBANTARTO.
+    </xs:documentation>
+		</xs:annotation>
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:enumeration value="WEBSHOP"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="isUserId" type="UserId">
+		<xs:annotation>
+			<xs:documentation>Felhasználó azonosítója</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="isPassword" type="Password">
+		<xs:annotation>
+			<xs:documentation>Felhasználó jelszava</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:complexType name="isClientSignatureType">
+		<xs:annotation>
+			<xs:documentation>Digitális aláirás (hexadecimális számok sorozata)</xs:documentation>
+		</xs:annotation>
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute name="algorithm" type="xs:string"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+</xs:schema>

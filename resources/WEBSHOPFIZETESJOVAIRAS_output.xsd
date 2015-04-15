@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="ISO-8859-2"?>
+<!-- edited with XMLSpy v2006 U (http://www.altova.com) by bs (iq) -->
+<xs:schema xmlns="otp.iqsys.hu" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="otp.iqsys.hu" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:include schemaLocation="mwtypes.xsd"/>
+	<xs:element name="answer">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="resultset"/>
+				<xs:element ref="messagelist"/>
+				<xs:element ref="infolist" minOccurs="0"/>
+				<xs:element ref="commentlist" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="resultset">
+		<xs:annotation>
+			<xs:documentation>Válaszadatok</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="record"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="messagelist">
+		<xs:annotation>
+			<xs:documentation>Válaszkódok listája</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="message" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="commentlist">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="comment" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="comment" type="xs:string"/>
+	<xs:element name="infolist">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="info" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="info" type="xs:string"/>
+	<xs:element name="message" type="xs:string">
+		<xs:annotation>
+			<xs:documentation>Hibakód szövege</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="record">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="mwtransactionid"/>
+				<xs:element ref="authorizationcode"/>
+				<xs:element ref="responsecode"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="mwtransactionid" type="xs:integer">
+		<xs:annotation>
+			<xs:documentation>Egyedi middleware tranzakció azonosító</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="authorizationcode" type="xs:string">
+		<xs:annotation>
+			<xs:documentation>Autorizációs kód</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="responsecode" type="xs:string">
+		<xs:annotation>
+			<xs:documentation>POS válaszkód</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+</xs:schema>

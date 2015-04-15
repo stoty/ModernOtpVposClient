@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="otp.iqsys.hu" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="otp.iqsys.hu" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:annotation>
+		<xs:documentation>WebShop fizetési folyamat</xs:documentation>
+	</xs:annotation>
+	<xs:include schemaLocation="mwtypes.xsd"/>
+	<xs:element name="StartWorkflow">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="TemplateName" type="xs:string"/>
+				<xs:element name="Variables">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element ref="isPOSID"/>
+							<xs:element ref="isMuvelet"/>
+							<xs:element ref="isClientCode"/>
+							<xs:element name="isClientSignature" type="isClientSignatureType"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="isPOSID" type="WebShopPosId">
+		<xs:annotation>
+			<xs:documentation>Shop azonosító</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="isMuvelet">
+		<xs:annotation>
+			<xs:documentation>A művelet alapján a folyamat vagy a kulcsok lejárati dátumát kérdezi le, vagy új kulcsot generál.</xs:documentation>
+		</xs:annotation>
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:enumeration value="LEJARAT_LEKERDEZES"/>
+				<xs:enumeration value="KULCSGENERALAS"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>	
+	<xs:element name="isClientCode">
+		<xs:annotation>
+			<xs:documentation>A Bank szolgáltatását igénybe vevő kliens kódja. A Fizetőfelület esetében ez mindig 'WEBSHOP' értékű.
+    </xs:documentation>
+		</xs:annotation>
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:enumeration value="WEBSHOP"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:complexType name="isClientSignatureType">
+		<xs:annotation>
+			<xs:documentation>Digitális aláirás (hexadecimális számok sorozata)</xs:documentation>
+		</xs:annotation>
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute name="algorithm" type="xs:string"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+</xs:schema>

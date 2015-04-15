@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema  xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="unqualified" attributeFormDefault="unqualified">
+  <xs:annotation>
+    <xs:documentation>WebShop fizetési folyamat</xs:documentation>
+  </xs:annotation>
+  <xs:include schemaLocation="mwtypes.xsd"/>
+  <xs:element name="StartWorkflow">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="TemplateName" type="xs:string"/>
+        <xs:element name="Variables">
+          <xs:complexType>
+            <xs:sequence>
+            <xs:element ref="isPOSID"/>
+            <xs:element ref="isTransactionID"/>
+            <xs:element ref="isAmount" minOccurs="0"/>
+            <xs:element ref="isExchange" minOccurs="0"/>
+            <xs:element ref="isLanguageCode" minOccurs="0"/>
+            <xs:element ref="isConsumerRegistrationID" minOccurs="0"/>
+            <xs:element ref="isConsumerRegistrationNeeded" minOccurs="0"/>
+            <xs:element ref="isNameNeeded" minOccurs="0"/>
+            <xs:element ref="isCountryNeeded" minOccurs="0"/>
+            <xs:element ref="isCountyNeeded" minOccurs="0"/>
+            <xs:element ref="isSettlementNeeded" minOccurs="0"/>
+            <xs:element ref="isStreetNeeded" minOccurs="0"/>
+            <xs:element ref="isZipcodeNeeded" minOccurs="0"/>
+            <xs:element ref="isMailAddressNeeded" minOccurs="0"/>
+            <xs:element ref="isNarrationNeeded" minOccurs="0"/>
+            <xs:element ref="isConsumerReceiptNeeded" minOccurs="0"/>
+            <xs:element ref="isBackURL" minOccurs="0"/>
+            <xs:element ref="isShopComment" minOccurs="0"/>
+            <xs:element ref="isClientCode"/>
+            <xs:element name="isClientSignature" type="isClientSignatureType"/>
+            <xs:element ref="isTwoStaged" minOccurs="0"/>
+            <xs:element ref="isMerchantNotice" minOccurs="0"/>
+            <xs:element ref="isProcessMode" minOccurs="0"/>
+            <xs:element ref="isCardPocketId" minOccurs="0"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>              
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="isPOSID" type="WebShopPosId">
+    <xs:annotation>
+      <xs:documentation>Shop azonosító</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:element name="isTransactionID" type="WebShopTransactionId">
+    <xs:annotation>
+      <xs:documentation>Tranzakció azonosító.</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:element name="isAmount" type="xs:integer">
+    <xs:annotation>
+      <xs:documentation>Vásárlás összege. Egész érték.</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:element name="isExchange">
+    <xs:annotation>
+      <xs:documentation>Vásárlás devizaneme</xs:documentation>
+    </xs:annotation>
+    <xs:simpleType>
+      <xs:restriction base="xs:string">
+        <xs:enumeration value="HUF"/>
+      </xs:restriction>
+    </xs:simpleType>    
+  </xs:element>
+  <xs:element name="isLanguageCode">
+    <xs:annotation>
+      <xs:documentation>Megjelenítendő Vevő oldali felület nyelvének kódja</xs:documentation>
+    </xs:annotation>
+    <xs:simpleType>
+      <xs:restriction base="xs:string">
+        <xs:enumeration value="hu"/>
+        <xs:enumeration value="en"/>
+        <xs:enumeration value="de"/>
+      </xs:restriction>
+    </xs:simpleType>  </xs:element>
+  <xs:element name="isConsumerRegistrationID" type="xs:string">
+    <xs:annotation>
+      <xs:documentation>Banki oldalon regisztrált ügyfél azonosítója.</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:element name="isConsumerRegistrationNeeded" type="BooleanType">
+    <xs:annotation>
+      <xs:documentation>Vevő regisztráció a Vevő oldali felületen szükséges?</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:element name="isNameNeeded" type="BooleanType">
+    <xs:annotation>
+      <xs:documentation>Vevő név bekérés a Vevő oldali felületen szükséges?</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:element name="isCountryNeeded" type="BooleanType">
+    <xs:annotation>
+      <xs:documentation>Vevő országkód bekérése a Vevő oldali felületen szükséges?</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:element name="isCountyNeeded" type="BooleanType">
+    <xs:annotation>
+      <xs:documentation>Megye bekérése a Vevő oldali felületen szükséges?</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:element name="isSettlementNeeded" type="BooleanType">
+    <xs:annotation>
+      <xs:documentation>Vevő település bekérés a Vevő oldali felületen szükséges?</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:element name="isStreetNeeded" type="BooleanType">
+    <xs:annotation>
+      <xs:documentation>Vevő utcanév bekérés a Vevő oldali felületen szükséges?</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:element name="isZipcodeNeeded" type="BooleanType">
+    <xs:annotation>
+      <xs:documentation>Vevő irányítószám bekérés a Vevő oldali felületen szükséges?</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:element name="isNarrationNeeded" type="BooleanType">
+    <xs:annotation>
+      <xs:documentation>Megjegyzés bekérés a Vevő oldali felületen szükséges?</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:element name="isMailAddressNeeded" type="BooleanType">
+    <xs:annotation>
+      <xs:documentation>Vevő e-mail címe bekérés a Vevő oldali felületen szükséges?</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:element name="isConsumerReceiptNeeded" type="BooleanType">
+    <xs:annotation>
+      <xs:documentation>A Vevő oldali felület a tranzakció után a Banki eredmény oldalt
+ jelenítse meg (true), vagy az isBackURL címre irányítson (false)?</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:element name="isBackURL" type="xs:string">
+    <xs:annotation>
+      <xs:documentation>A fizetés végén erre az url-re lesz visszairányítva a vevő. A BackURL paramétereket is tartalmazhat.
+         </xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:element name="isShopComment" type="xs:string">
+    <xs:annotation>
+      <xs:documentation>A shop megjegyzése a vásárláshoz.</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:element name="isClientCode">
+    <xs:annotation>
+      <xs:documentation>A Bank szolgáltatását igénybe vevő kliens kódja. A Fizetőfelület esetében ez mindig 'WEBSHOP' értékű.
+    </xs:documentation>
+    </xs:annotation>
+    <xs:simpleType>
+      <xs:restriction base="xs:string">
+        <xs:enumeration value="WEBSHOP"/>
+      </xs:restriction>
+    </xs:simpleType>
+  </xs:element>
+  <xs:complexType name="isClientSignatureType">
+    <xs:annotation>
+      <xs:documentation>Digitális aláirás (hexadecimális számok sorozata)</xs:documentation>
+    </xs:annotation>
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="algorithm" type="xs:string"/>
+      </xs:extension>
+    </xs:simpleContent>	
+  </xs:complexType>
+  <xs:element name="isTwoStaged" type="BooleanType">
+    <xs:annotation>
+      <xs:documentation>Kétlépcsős fizetési mód jelzője.</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:element name="isMerchantNotice" type="xs:string">
+    <xs:annotation>
+      <xs:documentation>Kereskedői közlemény</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:element name="isProcessMode" type="xs:string">
+    <xs:annotation>
+      <xs:documentation>Végrehajtási mód (belső használatra)</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:element name="isCardPocketId" type="xs:string">
+    <xs:annotation>
+      <xs:documentation>Zseb azonosító Cafeteria kártyás fizetésnél</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+</xs:schema>

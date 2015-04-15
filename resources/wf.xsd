@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="ISO-8859-2"?>
+<!-- edited with XML Spy v4.3 U (http://www.xmlspy.com) by NL (xxx) -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+    <xs:complexType name="VariableListType" abstract="true"/>
+    <xs:simpleType name="TemplateNameType">
+      <xs:restriction base="xs:string"/>
+    </xs:simpleType>
+    <xs:element name="StartWorkflow">
+        <xs:annotation>
+            <xs:documentation>Comment describing your root element</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:all>
+                <xs:element name="TemplateName" type="TemplateNameType"/>
+                <xs:element name="Variables" type="VariableListType"/>
+            </xs:all>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>

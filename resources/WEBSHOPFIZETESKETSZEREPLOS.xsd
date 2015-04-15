@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="otp.iqsys.hu" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="otp.iqsys.hu" elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <xs:annotation>
+    <xs:documentation>WebShop fizetési folyamat - kétszereplős mód</xs:documentation>
+  </xs:annotation>
+  <xs:include schemaLocation="./mwtypes.xsd"/>
+  <xs:redefine schemaLocation="./wf.xsd">
+    <xs:simpleType name="TemplateNameType">
+      <xs:restriction base="TemplateNameType">
+        <xs:enumeration value="WEBSHOPFIZETESKETSZEREPLOS"/>
+      </xs:restriction>
+    </xs:simpleType>
+    <xs:complexType name="VariableListType">
+      <xs:complexContent>
+        <xs:extension base="VariableListType">
+          <xs:sequence>
+            <xs:element ref="isPOSID"/>
+            <xs:element ref="isTransactionID"/>
+            <xs:element ref="isAmount"/>
+            <xs:element ref="isExchange"/>
+            <xs:element ref="isLanguageCode"/>
+            <xs:element ref="isConsumerRegistrationID" minOccurs="0"/>
+            <xs:element ref="isConsumerRegistrationNeeded" minOccurs="0"/>
+            <xs:element ref="isName"/>
+            <xs:element ref="isFullAddress"/>
+            <xs:element ref="isMailAddress"/>
+            <xs:element ref="isTelephone"/>
+            <xs:element ref="isIPAddress"/>
+            <xs:element ref="isExpirationDate"/>
+            <xs:element ref="isCardNumber"/>
+            <xs:element ref="isCVCCVV" minOccurs="0"/>
+            <xs:element ref="isClientCode"/>
+            <xs:element name="isClientSignature" type="isClientSignatureType"/>
+            <xs:element ref="isTwoStaged" minOccurs="0"/>
+          </xs:sequence>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+  </xs:redefine>
+  <xs:element name="isPOSID" type="WebShopPosId">
+    <xs:annotation>
+      <xs:documentation>Shop azonosító</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:element name="isTransactionID" type="WebShopTransactionId">
+    <xs:annotation>
+      <xs:documentation>Tranzakció azonosító.</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:element name="isAmount" type="xs:integer">
+    <xs:annotation>
+      <xs:documentation>Vásárlás összege. Egész érték.</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:element name="isExchange">
+    <xs:annotation>
+      <xs:documentation>Vásárlás devizaneme</xs:documentation>
+    </xs:annotation>
+    <xs:simpleType>
+      <xs:restriction base="xs:string">
+        <xs:enumeration value="HUF"/>
+      </xs:restriction>
+    </xs:simpleType>
+  </xs:element>
+  <xs:element name="isLanguageCode">
+    <xs:annotation>
+      <xs:documentation>Megjelenítendő Vevő oldali felület nyelvének kódja</xs:documentation>
+    </xs:annotation>
+    <xs:simpleType>
+      <xs:restriction base="xs:string">
+        <xs:enumeration value="hu"/>
+        <xs:enumeration value="en"/>
+        <xs:enumeration value="de"/>
+      </xs:restriction>
+    </xs:simpleType>
+  </xs:element>
+  <xs:element name="isConsumerRegistrationID" type="xs:string">
+    <xs:annotation>
+      <xs:documentation>Banki oldalon regisztrált ügyfél azonosítója.</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:element name="isConsumerRegistrationNeeded" type="BooleanType">
+    <xs:annotation>
+      <xs:documentation>Vevő regisztráció a Vevő oldali felületen szükséges?</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:element name="isMailAddress" type="xs:string">
+    <xs:annotation>
+      <xs:documentation>Vevő levelezési címe.
+			</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:element name="isName" type="xs:string">
+    <xs:annotation>
+      <xs:documentation>Vevő név</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:element name="isTelephone" type="xs:string">
+    <xs:annotation>
+      <xs:documentation>Vevő (mobil) telefonszáma.</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:element name="isIPAddress" type="xs:string">
+    <xs:annotation>
+      <xs:documentation>Vevő gépének IP címe</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:element name="isExpirationDate">
+    <xs:annotation>
+      <xs:documentation>Vevő bankkártya lejárati dátum. Formátuma: hhéé
+			</xs:documentation>
+    </xs:annotation>
+    <xs:simpleType>
+      <xs:restriction base="xs:string">
+        <xs:pattern value="\d{4}"/>
+      </xs:restriction>
+    </xs:simpleType>
+  </xs:element>
+  <xs:element name="isCardNumber">
+    <xs:annotation>
+      <xs:documentation>Vevő bankkártya kártyaszám. </xs:documentation>
+    </xs:annotation>
+    <xs:simpleType>
+      <xs:restriction base="xs:string">
+        <xs:pattern value="\d{16}|\d{15}"/>
+      </xs:restriction>
+    </xs:simpleType>
+  </xs:element>
+  <xs:element name="isFullAddress" type="xs:string">
+    <xs:annotation>
+      <xs:documentation>Vevő teljes címe</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:element name="isCVCCVV">
+    <xs:annotation>
+      <xs:documentation>Vevő bankkártya ellenőrző kód</xs:documentation>
+    </xs:annotation>
+    <xs:simpleType>
+      <xs:restriction base="xs:string">
+        <xs:pattern value="\d{3}|\d{4}"/>
+      </xs:restriction>
+    </xs:simpleType>
+  </xs:element>
+  <xs:element name="isClientCode">
+    <xs:annotation>
+      <xs:documentation>A Bank szolgáltatását igénybe vevő kliens kódja. A Fizetőfelület esetében ez mindig 'WEBSHOP' értékű.
+    </xs:documentation>
+    </xs:annotation>
+    <xs:simpleType>
+      <xs:restriction base="xs:string">
+        <xs:enumeration value="WEBSHOP"/>
+      </xs:restriction>
+    </xs:simpleType>
+  </xs:element>
+  <xs:complexType name="isClientSignatureType">
+    <xs:annotation>
+      <xs:documentation>Digitális aláirás (hexadecimális számok sorozata)</xs:documentation>
+    </xs:annotation>
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="algorithm" type="xs:string"/>
+      </xs:extension>
+    </xs:simpleContent>	
+  </xs:complexType>
+  <xs:element name="isTwoStaged" type="BooleanType">
+    <xs:annotation>
+      <xs:documentation>Kétlépcsős fizetési mód jelzője.</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+</xs:schema>

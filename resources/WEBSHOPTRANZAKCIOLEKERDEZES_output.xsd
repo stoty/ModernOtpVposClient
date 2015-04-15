@@ -1,0 +1,344 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema  xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="unqualified" attributeFormDefault="unqualified">
+	<xs:include schemaLocation="mwtypes.xsd"/>
+	<xs:element name="answer">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="resultset"/>
+				<xs:element ref="messagelist"/>
+				<xs:element ref="infolist" minOccurs="0"/>
+				<xs:element ref="commentlist" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="resultset">
+		<xs:annotation>
+			<xs:documentation>Válaszadatok</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="record" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="messagelist">
+		<xs:annotation>
+			<xs:documentation>Hibakódok listája</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="message" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="commentlist">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="comment" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="comment" type="xs:string"/>
+	<xs:element name="infolist">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="info" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="info" type="xs:string"/>
+	<xs:element name="record">
+		<xs:annotation>
+			<xs:documentation>Fizetési tranzakciók adatai</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="transactionid"/>
+				<xs:element ref="posid"/>
+				<xs:element ref="state"/>
+				<xs:element ref="responsecode"/>
+				<xs:element ref="shopinformed"/>
+				<xs:element ref="startdate"/>
+				<xs:element ref="enddate"/>
+				<xs:element ref="params"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="params">
+		<xs:annotation>
+			<xs:documentation>
+            Fizetési tranzakció paramétereinek listája
+         </xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="input"/>
+				<xs:element ref="output"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="input">
+		<xs:annotation>
+			<xs:documentation>Shop oldali paraméterek listája </xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="backurl" minOccurs="0"/>
+				<xs:element ref="exchange" minOccurs="0"/>
+				<xs:element ref="zipcodeneeded" minOccurs="0"/>
+				<xs:element ref="narrationneeded" minOccurs="0"/>
+				<xs:element ref="mailaddressneeded" minOccurs="0"/>
+				<xs:element ref="countyneeded" minOccurs="0"/>
+				<xs:element ref="nameneeded" minOccurs="0"/>
+				<xs:element ref="languagecode" minOccurs="0"/>
+				<xs:element ref="countryneeded" minOccurs="0"/>
+				<xs:element ref="amount" minOccurs="0"/>
+				<xs:element ref="shopcomment" minOccurs="0"/>
+				<xs:element ref="settlementneeded" minOccurs="0"/>
+				<xs:element ref="streetneeded" minOccurs="0"/>
+				<xs:element ref="consumerreceiptneeded" minOccurs="0"/>
+				<xs:element ref="consumerregistrationneeded" minOccurs="0"/>
+				<xs:element ref="consumerregistrationid" minOccurs="0"/>
+				<xs:element ref="merchantnotice" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="output">
+		<xs:annotation>
+			<xs:documentation> Vevő oldali paraméterek listája </xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="authorizationcode" minOccurs="0"/>
+				<xs:element ref="zipcode" minOccurs="0"/>
+				<xs:element ref="narration" minOccurs="0"/>
+				<xs:element ref="mailaddress" minOccurs="0"/>
+				<xs:element ref="county" minOccurs="0"/>
+				<xs:element ref="name" minOccurs="0"/>
+				<xs:element ref="country" minOccurs="0"/>
+				<xs:element ref="settlement" minOccurs="0"/>
+				<xs:element ref="street" minOccurs="0"/>
+				<xs:element ref="fulladdress" minOccurs="0"/>
+				<xs:element ref="telephone" minOccurs="0"/>
+				<xs:element ref="cardcountrycode" minOccurs="0"/>
+				<xs:element ref="webshoptrid" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="transactionid" type="WebShopTransactionId">
+		<xs:annotation>
+			<xs:documentation>Egyedi tranzakció azonosító</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="posid" type="WebShopPosId">
+		<xs:annotation>
+			<xs:documentation>Shop azonosító</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="state" type="xs:string">
+		<xs:annotation>
+			<xs:documentation>A folyamat állapotának kódja</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="responsecode" type="xs:string">
+		<xs:annotation>
+			<xs:documentation>POS válaszkód</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="shopinformed" type="BooleanType">
+		<xs:annotation>
+			<xs:documentation>Shop értesítve (SOAP választ fogadta a shop rendszere)</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="startdate" type="DateTimeOutput">
+		<xs:annotation>
+			<xs:documentation>Tranzakció indulásának időpontja. Formátum: ééééhhnnóóppmm</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="enddate" type="DateTimeOutput">
+		<xs:annotation>
+			<xs:documentation>
+            Tranzakció befejeződésének időpontja. 
+            Formátum: ééééhhnnóóppmm
+         </xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="backurl" type="xs:string">
+		<xs:annotation>
+			<xs:documentation>
+            A fizetés végén erre az url-re lesz visszairányítva a vevő.
+         </xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="exchange" type="xs:string">
+		<xs:annotation>
+			<xs:documentation>Vásárlás devizaneme</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="zipcodeneeded" type="BooleanType">
+		<xs:annotation>
+			<xs:documentation>
+            Vevő irányítószám bekérés a Vevő oldali felületen szükséges.
+         </xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="narrationneeded" type="BooleanType">
+		<xs:annotation>
+			<xs:documentation>
+            Megjegyzés bekérés a Vevő oldali felületen szükséges.
+         </xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="mailaddressneeded" type="BooleanType">
+		<xs:annotation>
+			<xs:documentation>
+            Vevő e-mail címe bekérés a Vevő oldali felületen szükséges.
+         </xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="countyneeded" type="BooleanType">
+		<xs:annotation>
+			<xs:documentation>
+            Megye bekérése a Vevő oldali felületen szükséges.
+         </xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="nameneeded" type="BooleanType">
+		<xs:annotation>
+			<xs:documentation>
+            Vevő név bekérés a Vevő oldali felületen szükséges.
+         </xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="languagecode" type="xs:string">
+		<xs:annotation>
+			<xs:documentation>
+            Megjelenítendő Vevő oldali felület nyelvének kódja
+         </xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="countryneeded" type="BooleanType">
+		<xs:annotation>
+			<xs:documentation>
+            Vevő országkód bekérése a Vevő oldali felületen szükséges.
+         </xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="amount" type="xs:integer">
+		<xs:annotation>
+			<xs:documentation>Vásárlás összege</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="shopcomment" type="xs:string">
+		<xs:annotation>
+			<xs:documentation>A shop megjegyzése a vásárláshoz</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="settlementneeded" type="BooleanType">
+		<xs:annotation>
+			<xs:documentation>
+            Vevő település bekérés a Vevő oldali felületen szükséges.
+         </xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="streetneeded" type="BooleanType">
+		<xs:annotation>
+			<xs:documentation>
+            Vevő utcanév bekérés a Vevő oldali felületen szükséges. 
+         </xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="consumerreceiptneeded" type="BooleanType">
+		<xs:annotation>
+			<xs:documentation>
+            A Vevő oldali felület a tranzakció után a saját eredmény oldalát
+            jelenítse meg, vagy az isBackURL címre irányítson.   
+         </xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="consumerregistrationneeded" type="BooleanType">
+		<xs:annotation>
+			<xs:documentation>Ügyfélregisztráció szükséges</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="consumerregistrationid" type="xs:string">
+		<xs:annotation>
+			<xs:documentation>Ügyfélregisztrációs azonosító</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="merchantnotice" type="xs:string">
+		<xs:annotation>
+			<xs:documentation>Kereskedői közlemény</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="authorizationcode" type="xs:string">
+		<xs:annotation>
+			<xs:documentation>Autorizációs kód</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="zipcode" type="xs:string">
+		<xs:annotation>
+			<xs:documentation>Értesítési cím adat: irányítószám</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="narration" type="xs:string">
+		<xs:annotation>
+			<xs:documentation>Megjegyzés</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="mailaddress" type="xs:string">
+		<xs:annotation>
+			<xs:documentation>Levelezési cím</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="county" type="xs:string">
+		<xs:annotation>
+			<xs:documentation>Értesítési cím adat: állam, megye</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="name" type="xs:string">
+		<xs:annotation>
+			<xs:documentation>Értesítési cím adat: név</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="country" type="xs:string">
+		<xs:annotation>
+			<xs:documentation>Értesítési cím adat: ország</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="settlement" type="xs:string">
+		<xs:annotation>
+			<xs:documentation>Értesítési cím adat: település</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="street" type="xs:string">
+		<xs:annotation>
+			<xs:documentation>Értesítési cím adat: utacnév, házszám</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="fulladdress" type="xs:string">
+		<xs:annotation>
+			<xs:documentation>Teljes cím</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="telephone" type="xs:string">
+		<xs:annotation>
+			<xs:documentation>Értesítési telefonszám</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="cardcountrycode" type="xs:string">
+		<xs:annotation>
+			<xs:documentation>Kártyakibocsátó országkód</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="message" type="xs:string">
+		<xs:annotation>
+			<xs:documentation>Válaszkód szövege</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="webshoptrid" type="xs:string">
+		<xs:annotation>
+			<xs:documentation>Webshop tranzakció azonosító</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+</xs:schema>

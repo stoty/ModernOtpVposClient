@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="ISO-8859-2"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="unqualified" attributeFormDefault="unqualified">
+  <xs:annotation>
+    <xs:documentation>WebShop tranzakció adatainak lekérdezése</xs:documentation>
+  </xs:annotation>
+  <xs:include schemaLocation="mwtypes.xsd"/>
+  <xs:element name="StartWorkflow">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="TemplateName" type="xs:string"/>
+        <xs:element name="Variables">
+          <xs:complexType>
+            <xs:sequence>
+            <xs:element ref="isPOSID"/>
+            <xs:element ref="isTransactionID" minOccurs="0"/>
+            <xs:element ref="isMaxRecords"/>
+            <xs:element ref="isStartDate" minOccurs="0"/>
+            <xs:element ref="isEndDate" minOccurs="0"/>
+              <xs:element ref="isState" minOccurs="0"/>
+            <xs:element ref="isClientCode"/>
+            <xs:element name="isClientSignature" type="isClientSignatureType"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>              
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="isPOSID" type="WebShopPosId">
+    <xs:annotation>
+      <xs:documentation>Shop azonosító</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:element name="isTransactionID" type="WebShopTransactionId">
+    <xs:annotation>
+      <xs:documentation>Tranzakció azonosító.</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:element name="isMaxRecords" type="xs:integer">
+    <xs:annotation>
+      <xs:documentation>A válaszban maximálisan szerepelhető rekordok száma.</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:element name="isStartDate" type="DateTime">
+    <xs:annotation>
+      <xs:documentation>
+            Szűrési feltétel az adott bolt által indított tranzakciók 
+            indulásának időpontjára. A válasz csak akkor tartalmaz egy 
+            adott fizetési tranzakciót, ha annak indítása nem előzi meg
+            az itt megadott időpontot.
+            Formátum: éééé.hh.nn óó:pp:mm
+         </xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:element name="isEndDate" type="DateTime">
+    <xs:annotation>
+      <xs:documentation>
+            Szűrési feltétel az adott bolt által indított tranzakciók 
+            indulásának időpontjára. A válasz csak akkor tartalmaz egy 
+            adott fizetési tranzakciót, ha annak indítása nem későbbi,
+            mint az itt megadott időpont.
+            Formátum: éééé.hh.nn óó:pp:mm
+         </xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:element name="isState" type="xs:string">
+    <xs:annotation>
+      <xs:documentation>
+            Opcionális szürési feltétel az adott bolt által indított tranzakciók 
+            aktuális állapotára. A válasz csak akkor tartalmaz egy 
+            adott fizetési tranzakciót, ha annak állapotkódja (kis- és
+            nagybetű különbségektől eltekintve) megegyezik az itt megadott 
+            értékkel.
+            Jelenleg támogatott értékek:
+            - VEVOOLDAL_INPUTVARAKOZAS
+            - FELDOLGOZAS_ALATT
+            - FELDOLGOZVA
+            - VEVOOLDAL_VISSZAVONT
+            - VEVOOLDAL_TIMEOUT
+            - BOLTOLDAL_LEZARASVARAKOZAS
+            - LEZARAS_ALATT
+            - BOLTOLDAL_TIMEOUT
+         </xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:element name="isClientCode">
+    <xs:annotation>
+      <xs:documentation>A Bank szolgáltatását igénybe vevő kliens kódja. A Fizetőfelület esetében ez mindig 'WEBSHOP' értékű.
+    </xs:documentation>
+    </xs:annotation>
+    <xs:simpleType>
+      <xs:restriction base="xs:string">
+        <xs:enumeration value="WEBSHOP"/>
+      </xs:restriction>
+    </xs:simpleType>
+  </xs:element>
+  <xs:complexType name="isClientSignatureType">
+    <xs:annotation>
+      <xs:documentation>Digitális aláirás</xs:documentation>
+    </xs:annotation>
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="algorithm" type="xs:string"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:element name="RequesterIP" type="WebShopPosId">
+    <xs:annotation>
+      <xs:documentation>Shop azonosító</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+</xs:schema>
