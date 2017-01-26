@@ -1,9 +1,10 @@
 package test;
 
+import hu.netfone.onlinepayment.otp.PosConfig;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
-import hu.netfone.onlinepayment.otp.PosConfig;
 
 public class TestData {
 	public static final String posId = "#02299991";

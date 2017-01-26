@@ -4,6 +4,8 @@ import hu.netfone.onlinepayment.otp.FizetesSikertelenException;
 import hu.netfone.onlinepayment.otp.LekerdezesSikertelenException;
 import hu.netfone.onlinepayment.otp.TranzakcioLekerdezes;
 
+import org.xml.sax.SAXException;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.security.InvalidKeyException;
@@ -15,8 +17,6 @@ import java.text.ParseException;
 import javax.xml.bind.JAXBException;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.soap.SOAPException;
-
-import org.xml.sax.SAXException;
 
 public class LekerdezesTeszt {
 

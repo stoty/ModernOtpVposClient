@@ -5,8 +5,8 @@ public class PosConfig {
 	protected String posId;
 	protected String keyFileName;
 	protected TrafficLogger trafficLogger;
-	
-	public PosConfig(String posId, String keyFileName, TrafficLogger trafficLogger){
+
+	public PosConfig(String posId, String keyFileName, TrafficLogger trafficLogger) {
 		this.posId = posId;
 		this.keyFileName = keyFileName;
 		this.trafficLogger = trafficLogger;
@@ -23,5 +23,5 @@ public class PosConfig {
 	public TrafficLogger getTrafficLogger() {
 		return trafficLogger;
 	}
-	
+
 }
