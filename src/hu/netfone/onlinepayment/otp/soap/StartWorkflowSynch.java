@@ -67,7 +67,7 @@ public class StartWorkflowSynch extends MWOperation {
 		response.setStartTime(df.parse(rawStartTime));
 
 		String rawInstanceId = document.getElementsByTagName("instanceId").item(0).getTextContent();
-		response.setInstanceId(Long.parseLong(rawInstanceId));
+		response.setInstanceId(rawInstanceId);
 
 		String rawTimeout = document.getElementsByTagName("timeout").item(0).getTextContent();
 		response.setTimeout(rawTimeout.toLowerCase().equals("true"));

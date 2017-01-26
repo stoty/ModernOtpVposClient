@@ -35,6 +35,8 @@ public class TranzakcioLekerdezes {
 
 	private WebshopTranzakcioLekerdezes tranzakcioLekerdezes;
 	private WebshopTranzakcioLekerdezesOutput tranzakcioLekerdezesOutput;
+	
+	private WorkflowState state;
 
 	private PosConfig config;
 
@@ -43,6 +45,7 @@ public class TranzakcioLekerdezes {
 	private void reset() {
 		tranzakcioLekerdezes = new WebshopTranzakcioLekerdezes();
 		tranzakcioLekerdezesOutput = new WebshopTranzakcioLekerdezesOutput();
+		state = null;
 		tranzakcioLekerdezesInit();
 	}
 
@@ -62,7 +65,7 @@ public class TranzakcioLekerdezes {
 
 	private void tranzakcioLekerdezesAlairas()
 			throws InvalidKeyException, FileNotFoundException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, IOException {
-		String[] adatok = new String[5];
+		String[] adatok = new String[]{"","","","",""};
 
 		adatok[0] = tranzakcioLekerdezes.getVariables().getIsPOSID();
 		if (tranzakcioLekerdezes.getVariables().getIsTransactionID() != null) {
@@ -88,9 +91,9 @@ public class TranzakcioLekerdezes {
 		tranzakcioLekerdezes.getVariables().setIsClientSignature(signature);
 	}
 
-	public WebshopTranzakcioLekerdezesOutput lekerdezesInditas(Date startDate, Date endDate, BigInteger maxRecords)
+	public void lekerdezesInditas(Date startDate, Date endDate, BigInteger maxRecords)
 			throws InvalidKeyException, FileNotFoundException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, IOException, JAXBException,
-			SOAPException, ParserConfigurationException, SAXException, ParseException, LekerdezesSikertelenException {
+			SOAPException, ParserConfigurationException, SAXException, ParseException {
 		reset();
 
 		tranzakcioLekerdezes.getVariables().setIsStartDate(df.format(startDate));
@@ -99,12 +102,11 @@ public class TranzakcioLekerdezes {
 
 		lekerdezesKozos();
 
-		return tranzakcioLekerdezesOutput;
 	}
 
-	public WebshopTranzakcioLekerdezesOutput lekerdezesInditas(String tranzakcioAzonosito)
+	public void lekerdezesInditas(String tranzakcioAzonosito)
 			throws InvalidKeyException, FileNotFoundException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, IOException, JAXBException,
-			SOAPException, ParserConfigurationException, SAXException, ParseException, LekerdezesSikertelenException {
+			SOAPException, ParserConfigurationException, SAXException, ParseException {
 		reset();
 
 		tranzakcioLekerdezes.getVariables().setIsTransactionID(tranzakcioAzonosito);
@@ -112,11 +114,10 @@ public class TranzakcioLekerdezes {
 
 		lekerdezesKozos();
 
-		return tranzakcioLekerdezesOutput;
 	}
 
 	private void lekerdezesKozos() throws InvalidKeyException, FileNotFoundException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException,
-			IOException, JAXBException, SOAPException, ParserConfigurationException, SAXException, ParseException, LekerdezesSikertelenException {
+			IOException, JAXBException, SOAPException, ParserConfigurationException, SAXException, ParseException {
 		tranzakcioLekerdezesAlairas();
 
 		JAXBContext requestJaxbContext = JAXBContext.newInstance(WebshopTranzakcioLekerdezes.class);
@@ -131,62 +132,64 @@ public class TranzakcioLekerdezes {
 		config.getTrafficLogger().logTraffic(TrafficType.XML_OUT, belsoXml);
 
 		StartWorkflowSynch workflowSynchStub = new StartWorkflowSynch();
-		WorkflowState state = workflowSynchStub.call(Constants.TRANZAKCIO_LEKERDEZES_TEMPLATE_NEV, belsoXml, config.getTrafficLogger());
+		state = workflowSynchStub.call(Constants.TRANZAKCIO_LEKERDEZES_TEMPLATE_NEV, belsoXml, config.getTrafficLogger());
 
 		config.getTrafficLogger().logTraffic(TrafficType.XML_IN, state.getResult());
-
-
-		// Ha idáig eljutunk, akkor itt sok hiba nem lehet, de azért ellenőrizgessünk
-
-		if (!state.isCompleted()) {
-			throw new LekerdezesSikertelenException("isCompleted = false");
-		}
 
 		JAXBContext responseJaxbContext = JAXBContext.newInstance(WebshopTranzakcioLekerdezesOutput.class);
 		Unmarshaller responseUnMarshaller = responseJaxbContext.createUnmarshaller();
 		tranzakcioLekerdezesOutput = (WebshopTranzakcioLekerdezesOutput) responseUnMarshaller.unmarshal(new StringReader(state.getResult()));
 
-		if (!tranzakcioLekerdezesOutput.getMessagelist().getMessage().get(0).toUpperCase().equals(Constants.SIKER)) {
-			throw new LekerdezesSikertelenException("message != SIKER");
-		}
-
 	}
-
+	
 	// Innen kényelmi funkciók
-	public boolean egyTranzakcioSikeres(String tranzakcioAzonosito)
-			throws InvalidKeyException, FileNotFoundException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, IOException, JAXBException,
-			SOAPException, ParserConfigurationException, SAXException, ParseException, LekerdezesSikertelenException {
-		lekerdezesInditas(tranzakcioAzonosito);
+	
+	public boolean lekerdezesSikeres() {
+		return state.isCompleted() && tranzakcioLekerdezesOutput.getMessagelist().getMessage().get(0).toUpperCase().equals(Constants.SIKER);
+	}
+	
+	public TranzakcioStatusz egyTranzakcioSikeres(String tranzakcioAzonosito) {
+		
+		try {
+			lekerdezesInditas(tranzakcioAzonosito);
+			
+			if(tranzakcioLekerdezesOutput.getMessagelist().getMessage().get(0).toUpperCase().equals(Constants.HIANYZIKTRANZAZON)){
+				return TranzakcioStatusz.ISMERETLEN_ID;
+			}
+			
+			if (!lekerdezesSikeres()) {
+				throw new Exception("Sikertelen lekérdezés");
+			}
 
-		if (tranzakcioLekerdezesOutput.getResultset().getRecord().size() != 1) {
-			throw new LekerdezesSikertelenException("nem egy rekord van a resultset-ben");
+			if (tranzakcioLekerdezesOutput.getResultset().getRecord().size() != 1) {
+				throw new Exception("nem egy rekord van a resultset-ben");
+			}
+			
+			return recordStatusz(tranzakcioLekerdezesOutput.getResultset().getRecord().get(0));
+
+		} catch (Exception e) {
+			return TranzakcioStatusz.LEKERDEZESI_HIBA;
 		}
 
-		Record eredmeny = tranzakcioLekerdezesOutput.getResultset().getRecord().get(0);
-		if (!eredmeny.getTransactionid().equals(tranzakcioAzonosito)) {
-			throw new LekerdezesSikertelenException("Nem a lekérdezett tranzakcióra kaptam választ");
+	}
+	
+	public TranzakcioStatusz recordStatusz(Record record) {
+		try {
+	
+			if (record.getResponsecode() == null || record.getResponsecode().isEmpty()) {
+				return TranzakcioStatusz.FOLYAMATBAN;
+			}
+		
+			if (Constants.successPosResponseCodes.contains(record.getResponsecode())) {
+				return TranzakcioStatusz.SIKERES;
+			} else {
+				return TranzakcioStatusz.SIKERTELEN;
+			}
+			
+		} catch (Exception e) {
+			return TranzakcioStatusz.LEKERDEZESI_HIBA;
 		}
-
-		if (!eredmeny.getState().equals(Constants.FELDOLGOZVA)) {
-			return false;
-		}
-
-		if (eredmeny.getParams().getOutput().getAuthorizationcode() == null || eredmeny.getParams().getOutput().getAuthorizationcode().equals("")) {
-			return false;
-		}
-
-		if (Constants.successPosResponseCodes.contains(eredmeny.getResponsecode())) {
-			return true;
-		}
-
-		return false;
 	}
 
-	public String getResponseCode() {
-		return tranzakcioLekerdezesOutput.getResultset().getRecord().get(0).getResponsecode();
-	}
-
-	public String getAuthorizationcode() {
-		return tranzakcioLekerdezesOutput.getResultset().getRecord().get(0).getParams().getOutput().getAuthorizationcode();
-	}
+	
 }

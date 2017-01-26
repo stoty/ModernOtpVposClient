@@ -4,7 +4,7 @@ ModernOtpVposClient
 Leírás:
 
 Ez a szoftver az OTP Bank Online kártyelfogadó szolgáltatásához kapcsolódást valósítja meg java nyelven.
-Az interface általános leírását lásd az OTP által biztosított csomagban (jelenleg Webshop_4.0.zip) található InternetesFizetoFelulet.doc -ban.
+Az interface általános leírását lásd az OTP által biztosított csomagban (jelenleg Webshop_5.0.zip) található InternetesFizetoFelulet.doc -ban.
 
 Az OTP által a hivatalos csomagban biztosított kliens nem fodrítható le 1.4-esnél újabb java-val, és az Apache Axis könyvtár használatát igényli.
 E miatt modern java projectekbe az integrálása nehézkes vagy lehetetlen.
@@ -37,17 +37,14 @@ A szoftver paraméterezése a PosConfig osztályon keresztül történik.
 Ebben kell beállítani az OTP-től szerződéskor kapott VPOS id-t, 
 az ugyancsak az OTP által megadott provát kulcsot, és a hálózati forgalom logolását végző objektumot.
 
-A fizetés művelet szinkron, vagyis a HaromszereplosFizetesInditas class fizetesInditas metódusa 
-csak a tranzakció sikeres vagy sikertelen lezárása után tér vissza, 
-de ehhez először el kell irányítani a kezelő böngészőjét az OTP oldalára, hogy ott meg tudja adni azt adatokat.
-
-Erre egy megoldás a HaromszereplosFizetesBackground class használata, amelyik meghívás után rögtön visszatér, 
-és a CallbackFunction-jában lehet megadni a sikeres/sikertelen fizetés esetén meghívandó üzleti logikát
-
+A fizetés művelet aszinkron, vagyis a HaromszereplosFizetesInditas class fizetesInditas metódusa 
+rögtön visszatér, a nélkül, hogy a tényleges tranzakció eredménye ismert lenne.
+A választ az eredményt később ( célszerűan amikor az OTP visszairányítja az ügyfél böngészújét a callback oldalra), a 
+TranzakcioLekerdezes osztállyal lehet lekérdezni.
 
 Példák használata:
 
-1. Webshop_4.0.zip letöltése és kitömörítése
+1. Webshop_5.0.zip letöltése és kitömörítése
 
 2. A test könyvtárban a test/TestData.java file-ban beírni a kitömörített Webshop_4.0.zip-en található teszt privát kulcs elérési útját
 
@@ -59,10 +56,9 @@ Példák használata:
 
 5.1 A stdout-re kiírt URL-t be kell másolni egy böngészőbe, ekkor meg kell jelennie az OTP fizető felültnek, 
 5.2 Az OTP felületet a Webshop_4.0.zip-ben található teszt kártya adatokkal ki kell tölteni
-5.3 Jóváhagyás után a  FizetesTeszt.class kiírja a tranzakció eredményét
-5.4 Az OTP weboldala továbbirányítja a böngészőt a TestData-ban megadott URL-re
+5.3 Az OTP weboldala továbbirányítja a böngészőt a TestData-ban megadott URL-re
 
-6. LekerdezesTeszt futtatásávavl lehet utólagosan lekérdezni egy tranzakció eredményét
+6. LekerdezesTeszt futtatásával lehet utólagosan lekérdezni a tranzakció eredményét
 6.1 A Fizetésteszt által kiírt tranzakcióId-t meg kell adni mint paramétert a LekerdezesTeszt-nek, és futtatni
 6.2 Az stdout-ra kiírja futtatás eredményét
 

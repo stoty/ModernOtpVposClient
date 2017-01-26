@@ -10,7 +10,7 @@ public class WorkflowState {
 	private Date endTime;
 	private boolean completed;
 	private Date startTime;
-	private long instanceId;
+	private String instanceId;
 	private boolean timeout;
 
 	public String getResult() {
@@ -53,11 +53,11 @@ public class WorkflowState {
 		this.startTime = startTime;
 	}
 
-	public long getInstanceId() {
+	public String getInstanceId() {
 		return instanceId;
 	}
 
-	public void setInstanceId(long instanceId) {
+	public void setInstanceId(String instanceId) {
 		this.instanceId = instanceId;
 	}
 

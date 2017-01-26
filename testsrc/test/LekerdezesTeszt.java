@@ -1,7 +1,5 @@
 package test;
 
-import hu.netfone.onlinepayment.otp.FizetesSikertelenException;
-import hu.netfone.onlinepayment.otp.LekerdezesSikertelenException;
 import hu.netfone.onlinepayment.otp.TranzakcioLekerdezes;
 
 import org.xml.sax.SAXException;
@@ -20,15 +18,17 @@ import javax.xml.soap.SOAPException;
 
 public class LekerdezesTeszt {
 
-	public static void main(String[] args) throws InvalidKeyException, FileNotFoundException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, IOException, JAXBException, SOAPException, ParserConfigurationException, SAXException, ParseException, FizetesSikertelenException, LekerdezesSikertelenException {
-		String tranzakcioId="valami";
-		if(args.length==1 && !args[0].isEmpty()){
+	public static void main(String[] args) throws InvalidKeyException, FileNotFoundException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, IOException, JAXBException, SOAPException, ParserConfigurationException, SAXException, ParseException {
+		String tranzakcioId;
+		if (args.length == 1 && !args[0].isEmpty()) {
 			tranzakcioId = args[0];
+		} else {
+			System.out.println("Meg kell adni a tranzakció id-t");
+			return;
 		}
 		
-		
 		TranzakcioLekerdezes kliens = new TranzakcioLekerdezes(TestData.getPosConfig());
-		kliens.egyTranzakcioSikeres(tranzakcioId);
+		System.out.println("eredmeny: " + kliens.egyTranzakcioSikeres(tranzakcioId));
 	}
 
 }

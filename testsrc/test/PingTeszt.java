@@ -1,6 +1,5 @@
 package test;
 
-import hu.netfone.onlinepayment.otp.FizetesSikertelenException;
 import hu.netfone.onlinepayment.otp.soap.Ping;
 
 import org.xml.sax.SAXException;
@@ -19,7 +18,7 @@ import javax.xml.soap.SOAPException;
 
 public class PingTeszt {
 
-	public static void main(String[] args) throws InvalidKeyException, FileNotFoundException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, IOException, JAXBException, SOAPException, ParserConfigurationException, SAXException, ParseException, FizetesSikertelenException {
+	public static void main(String[] args) throws InvalidKeyException, FileNotFoundException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, IOException, JAXBException, SOAPException, ParserConfigurationException, SAXException, ParseException {
 		
 		Ping kliens = new Ping();
 		System.out.println(kliens.call(TestData.getPosConfig().getTrafficLogger()));

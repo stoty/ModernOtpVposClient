@@ -1,7 +1,7 @@
 package test;
 
-import hu.netfone.onlinepayment.otp.FizetesSikertelenException;
 import hu.netfone.onlinepayment.otp.HaromszereplosFizetesInditas;
+import hu.netfone.onlinepayment.otp.OTPInterfaceTulterheltException;
 
 import org.xml.sax.SAXException;
 
@@ -21,7 +21,7 @@ import javax.xml.soap.SOAPException;
 
 public class FizetesTeszt {
 
-	public static void main(String[] args) throws InvalidKeyException, FileNotFoundException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, IOException, JAXBException, SOAPException, ParserConfigurationException, SAXException, ParseException, FizetesSikertelenException {
+	public static void main(String[] args) throws InvalidKeyException, FileNotFoundException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, IOException, JAXBException, SOAPException, ParserConfigurationException, SAXException, ParseException, OTPInterfaceTulterheltException {
 		String tranzakcioID = "teszttranzakcioid"+ new java.util.Date().getTime();
 		String backURL = TestData.getBackURLPrefix()+URLEncoder.encode("tranzakcioID", "UTF-8");
 		BigInteger osszeg = BigInteger.valueOf(5);
@@ -33,7 +33,8 @@ public class FizetesTeszt {
 		System.out.println();
 
 		HaromszereplosFizetesInditas kliens = new HaromszereplosFizetesInditas(TestData.getPosConfig());
-		kliens.fizetesInditas(osszeg, comment, tranzakcioID, backURL);
+		
+		System.out.println("eredmény:" + kliens.fizetesInditasSimple(osszeg, comment, tranzakcioID, backURL));
 
 	}
 

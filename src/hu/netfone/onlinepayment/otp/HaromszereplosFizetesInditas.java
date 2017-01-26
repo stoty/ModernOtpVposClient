@@ -37,9 +37,12 @@ public class HaromszereplosFizetesInditas {
 
 	private PosConfig config;
 
+	public HaromszereplosFizetesInditas() throws Exception {
+		throw new Exception("nem lehet konfig nélkül létrehozni");
+	}
+
 	public HaromszereplosFizetesInditas(PosConfig posConfig) {
 		config = posConfig;
-		webshopFizetesInit();
 	}
 
 	private void webshopFizetesInit() {
@@ -88,15 +91,59 @@ public class HaromszereplosFizetesInditas {
 		webshopFizetes.getVariables().setIsClientSignature(signature);
 	}
 
-	public void fizetesElokeszites(BigInteger osszeg, String comment, String tranzakcioId, String backURL) {
+	public boolean fizetesInditasSimple(BigInteger osszeg, String comment, String tranzakcioId, String backURL) throws OTPInterfaceTulterheltException {
+		try {
+			fizetesInditas(osszeg, comment, tranzakcioId, backURL);
+
+			String result = null;
+			try {
+				result = webshopFizetesKimenet.getMessagelist().getMessage().get(0);
+			  // TODO log here
+			} catch (Exception e) {
+				// Nem tudtuk feldolgozni a választ
+				// TODO log here
+			}
+			
+			if ("SIKERESWEBSHOPFIZETESINDITAS".equals(result)) {
+				return true;
+			} else {
+				return false;
+			}
+			
+		} catch (InvalidKeyException
+				| NoSuchAlgorithmException
+				| InvalidKeySpecException
+				| SignatureException
+				| IOException
+				| JAXBException
+				| ParserConfigurationException
+				| SAXException
+				| ParseException e) {
+			// Nem jött össze a kommunikáció
+			// TODO log here
+			return false;
+		} catch (SOAPException soapException) {
+			// TODO log here
+			if (soapException.getMessage().contains("Maximum workflow number is reached")) {
+				throw new OTPInterfaceTulterheltException();
+			}
+			// TODO log here
+			return false;
+		}
+
+	}
+
+	public void fizetesInditas(BigInteger osszeg, String comment, String tranzakcioId, String backURL)
+			throws InvalidKeyException, FileNotFoundException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException,
+			IOException, JAXBException, SOAPException, ParserConfigurationException, SAXException, ParseException {
+
+		webshopFizetesInit();
+		
 		webshopFizetes.getVariables().setIsAmount(osszeg);
 		webshopFizetes.getVariables().setIsShopComment(comment);
 		webshopFizetes.getVariables().setIsTransactionID(tranzakcioId);
 		webshopFizetes.getVariables().setIsBackURL(backURL);
-	}
 
-	public String fizetesInditas() throws InvalidKeyException, FileNotFoundException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException,
-			IOException, JAXBException, SOAPException, ParserConfigurationException, SAXException, ParseException, FizetesSikertelenException {
 		webshopFizetesAlairas();
 		// Itt megvan az aláírt ojjektumunk
 
@@ -117,34 +164,11 @@ public class HaromszereplosFizetesInditas {
 
 		config.getTrafficLogger().logTraffic(TrafficType.XML_IN, state.getResult());
 
-
-		// Ha idáig eljutunk, akkor itt sok hiba nem lehet, de azért ellenőrizgessünk
-
-		if (!state.isCompleted()) {
-			throw new FizetesSikertelenException("isCompleted = false");
-		}
-
+		// Parse-oljuk fel a választ
 		JAXBContext responseJaxbContext = JAXBContext.newInstance(WebshopFizetesOutput.class);
 		Unmarshaller responseUnMarshaller = responseJaxbContext.createUnmarshaller();
 		webshopFizetesKimenet = (WebshopFizetesOutput) responseUnMarshaller.unmarshal(new StringReader(state.getResult()));
 
-		if (!webshopFizetesKimenet.getMessagelist().getMessage().get(0).toUpperCase().equals(Constants.SIKER)) {
-			throw new FizetesSikertelenException("message != SIKER", webshopFizetesKimenet.getMessagelist().getMessage().get(0));
-		}
-
-		if (webshopFizetesKimenet.getResultset().getRecord().get(0).getAuthorizationcode() == null
-				|| webshopFizetesKimenet.getResultset().getRecord().get(0).getAuthorizationcode().isEmpty()) {
-			throw new FizetesSikertelenException("Nincs authorization code");
-		}
-
-		return webshopFizetesKimenet.getResultset().getRecord().get(0).getAuthorizationcode();
-	}
-
-	public String fizetesInditas(BigInteger osszeg, String comment, String tranzakcioId, String backURL)
-			throws InvalidKeyException, FileNotFoundException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, IOException, JAXBException,
-			SOAPException, ParserConfigurationException, SAXException, ParseException, FizetesSikertelenException {
-		fizetesElokeszites(osszeg, comment, tranzakcioId, backURL);
-		return fizetesInditas();
 	}
 
 	public WebshopFizetesOutput getWebshopFizetesOutput() {
