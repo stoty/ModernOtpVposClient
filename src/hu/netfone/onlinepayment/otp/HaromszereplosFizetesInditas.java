@@ -34,6 +34,8 @@ public class HaromszereplosFizetesInditas {
 
 	private WebshopFizetes webshopFizetes = new WebshopFizetes();
 	private WebshopFizetesOutput webshopFizetesKimenet;
+	
+	WorkflowState state = null;
 
 	private PosConfig config;
 
@@ -46,6 +48,9 @@ public class HaromszereplosFizetesInditas {
 	}
 
 	private void webshopFizetesInit() {
+		state = null;
+		webshopFizetesKimenet = null;
+		
 		webshopFizetes.setTemplateName(Constants.HAROMSZEREPLOS_TEMPLATE_NEV);
 		Variables variables = new Variables();
 		webshopFizetes.setVariables(variables);
@@ -91,48 +96,6 @@ public class HaromszereplosFizetesInditas {
 		webshopFizetes.getVariables().setIsClientSignature(signature);
 	}
 
-	public boolean fizetesInditasSimple(BigInteger osszeg, String comment, String tranzakcioId, String backURL) throws OTPInterfaceTulterheltException {
-		try {
-			fizetesInditas(osszeg, comment, tranzakcioId, backURL);
-
-			String result = null;
-			try {
-				result = webshopFizetesKimenet.getMessagelist().getMessage().get(0);
-			  // TODO log here
-			} catch (Exception e) {
-				// Nem tudtuk feldolgozni a választ
-				// TODO log here
-			}
-			
-			if ("SIKERESWEBSHOPFIZETESINDITAS".equals(result)) {
-				return true;
-			} else {
-				return false;
-			}
-			
-		} catch (InvalidKeyException
-				| NoSuchAlgorithmException
-				| InvalidKeySpecException
-				| SignatureException
-				| IOException
-				| JAXBException
-				| ParserConfigurationException
-				| SAXException
-				| ParseException e) {
-			// Nem jött össze a kommunikáció
-			// TODO log here
-			return false;
-		} catch (SOAPException soapException) {
-			// TODO log here
-			if (soapException.getMessage().contains("Maximum workflow number is reached")) {
-				throw new OTPInterfaceTulterheltException();
-			}
-			// TODO log here
-			return false;
-		}
-
-	}
-
 	public void fizetesInditas(BigInteger osszeg, String comment, String tranzakcioId, String backURL)
 			throws InvalidKeyException, FileNotFoundException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException,
 			IOException, JAXBException, SOAPException, ParserConfigurationException, SAXException, ParseException {
@@ -160,7 +123,7 @@ public class HaromszereplosFizetesInditas {
 		config.getTrafficLogger().logTraffic(TrafficType.XML_OUT, belsoXml);
 
 		StartWorkflowSynch workflowSynchStub = new StartWorkflowSynch();
-		WorkflowState state = workflowSynchStub.call(Constants.HAROMSZEREPLOS_TEMPLATE_NEV, belsoXml, config.getTrafficLogger());
+		state = workflowSynchStub.call(Constants.HAROMSZEREPLOS_TEMPLATE_NEV, belsoXml, config.getTrafficLogger());
 
 		config.getTrafficLogger().logTraffic(TrafficType.XML_IN, state.getResult());
 
@@ -170,37 +133,31 @@ public class HaromszereplosFizetesInditas {
 		webshopFizetesKimenet = (WebshopFizetesOutput) responseUnMarshaller.unmarshal(new StringReader(state.getResult()));
 
 	}
+	
+	public WebshopFizetes getWebshopFizetes() {
+		return webshopFizetes;
+	}
 
-	public WebshopFizetesOutput getWebshopFizetesOutput() {
+	public WebshopFizetesOutput getWebshopFizetesKimenet() {
 		return webshopFizetesKimenet;
 	}
 
-	public BigInteger getAmount() {
-		return webshopFizetes.getVariables().getIsAmount();
-	}
-
-	public String getComment() {
-		return webshopFizetes.getVariables().getIsShopComment();
-	}
-
-	public String getTranzakcioId() {
-		return webshopFizetes.getVariables().getIsTransactionID();
-	}
-
-	public String getBackURL() {
-		return webshopFizetes.getVariables().getIsBackURL();
-	}
-
-	public String getAuthorizationCode() {
-		return webshopFizetesKimenet.getResultset().getRecord().get(0).getAuthorizationcode();
-	}
-
-	public String getMessage() {
-		return webshopFizetesKimenet.getMessagelist().getMessage().get(0);
+	public WorkflowState getState() {
+		return state;
 	}
 
 	public String getRedirectUrlString() throws UnsupportedEncodingException {
 		return String.format(Constants.OTP_WEBSHOP_CUSTOMER_SIDE_URL, URLEncoder.encode(config.posId, "UTF-8"),
 				URLEncoder.encode(webshopFizetes.getVariables().getIsTransactionID(), "UTF-8"), webshopFizetes.getVariables().getIsLanguageCode());
 	}
+
+	//Helper funkciók
+	public String getResultCode() {
+		return webshopFizetesKimenet.getMessagelist().getMessage().get(0).toUpperCase();
+	}
+	
+	public boolean sikeres() {
+		return state.isCompleted() && getResultCode().toUpperCase().equals(Constants.SIKERESWEBSHOPFIZETESINDITAS);
+	}	
+
 }

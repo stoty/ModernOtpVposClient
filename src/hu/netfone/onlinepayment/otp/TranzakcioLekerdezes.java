@@ -7,6 +7,7 @@ import hu.netfone.onlinepayment.otp.soap.WorkflowState;
 import hu.iqsys.otp.webshoptranzakciolekerdezes.input.IsClientSignatureType;
 import hu.iqsys.otp.webshoptranzakciolekerdezes.input.WebshopTranzakcioLekerdezes;
 import hu.iqsys.otp.webshoptranzakciolekerdezes.input.WebshopTranzakcioLekerdezes.Variables;
+import hu.iqsys.otp.webshoptranzakciolekerdezes.output.Output;
 import hu.iqsys.otp.webshoptranzakciolekerdezes.output.Record;
 import hu.iqsys.otp.webshoptranzakciolekerdezes.output.WebshopTranzakcioLekerdezesOutput;
 import org.xml.sax.SAXException;
@@ -23,6 +24,7 @@ import java.security.spec.InvalidKeySpecException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -42,7 +44,7 @@ public class TranzakcioLekerdezes {
 
 	private SimpleDateFormat df = new SimpleDateFormat("yyyy.MM.dd. HH:mm:ss");
 
-	private void reset() {
+	private void init() {
 		tranzakcioLekerdezes = new WebshopTranzakcioLekerdezes();
 		tranzakcioLekerdezesOutput = new WebshopTranzakcioLekerdezesOutput();
 		state = null;
@@ -94,7 +96,7 @@ public class TranzakcioLekerdezes {
 	public void lekerdezesInditas(Date startDate, Date endDate, BigInteger maxRecords)
 			throws InvalidKeyException, FileNotFoundException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, IOException, JAXBException,
 			SOAPException, ParserConfigurationException, SAXException, ParseException {
-		reset();
+		init();
 
 		tranzakcioLekerdezes.getVariables().setIsStartDate(df.format(startDate));
 		tranzakcioLekerdezes.getVariables().setIsEndDate(df.format(endDate));
@@ -107,7 +109,7 @@ public class TranzakcioLekerdezes {
 	public void lekerdezesInditas(String tranzakcioAzonosito)
 			throws InvalidKeyException, FileNotFoundException, NoSuchAlgorithmException, InvalidKeySpecException, SignatureException, IOException, JAXBException,
 			SOAPException, ParserConfigurationException, SAXException, ParseException {
-		reset();
+		init();
 
 		tranzakcioLekerdezes.getVariables().setIsTransactionID(tranzakcioAzonosito);
 		tranzakcioLekerdezes.getVariables().setIsMaxRecords(BigInteger.ONE);
@@ -142,54 +144,52 @@ public class TranzakcioLekerdezes {
 
 	}
 	
+		
+	public WebshopTranzakcioLekerdezes getTranzakcioLekerdezes() {
+		return tranzakcioLekerdezes;
+	}
+
+	public WebshopTranzakcioLekerdezesOutput getTranzakcioLekerdezesOutput() {
+		return tranzakcioLekerdezesOutput;
+	}
+
+	public WorkflowState getState() {
+		return state;
+	}
+
 	// Innen kényelmi funkciók
-	
-	public boolean lekerdezesSikeres() {
+
+	//Ez csak a lekérdezés sikeressége, nem a lekérdezett tranzakcióé!
+	public boolean sikeres() {
 		return state.isCompleted() && tranzakcioLekerdezesOutput.getMessagelist().getMessage().get(0).toUpperCase().equals(Constants.SIKER);
 	}
 	
-	public TranzakcioStatusz egyTranzakcioSikeres(String tranzakcioAzonosito) {
-		
-		try {
-			lekerdezesInditas(tranzakcioAzonosito);
-			
-			if(tranzakcioLekerdezesOutput.getMessagelist().getMessage().get(0).toUpperCase().equals(Constants.HIANYZIKTRANZAZON)){
-				return TranzakcioStatusz.ISMERETLEN_ID;
-			}
-			
-			if (!lekerdezesSikeres()) {
-				throw new Exception("Sikertelen lekérdezés");
-			}
-
-			if (tranzakcioLekerdezesOutput.getResultset().getRecord().size() != 1) {
-				throw new Exception("nem egy rekord van a resultset-ben");
-			}
-			
-			return recordStatusz(tranzakcioLekerdezesOutput.getResultset().getRecord().get(0));
-
-		} catch (Exception e) {
-			return TranzakcioStatusz.LEKERDEZESI_HIBA;
-		}
-
+	public List<Record> getFizetesTranzakcioResultLista() {
+		return tranzakcioLekerdezesOutput.getResultset().getRecord();
 	}
 	
-	public TranzakcioStatusz recordStatusz(Record record) {
-		try {
-	
-			if (record.getResponsecode() == null || record.getResponsecode().isEmpty()) {
-				return TranzakcioStatusz.FOLYAMATBAN;
-			}
-		
-			if (Constants.successPosResponseCodes.contains(record.getResponsecode())) {
-				return TranzakcioStatusz.SIKERES;
-			} else {
-				return TranzakcioStatusz.SIKERTELEN;
-			}
-			
-		} catch (Exception e) {
-			return TranzakcioStatusz.LEKERDEZESI_HIBA;
-		}
+	public Record getFizetesTranzakcioSingleResult() {
+		return getFizetesTranzakcioResultLista().get(0);
 	}
-
+	
+	public Output getFizetesTranzakcioOutput(Record record) {
+		return record.getParams().getOutput();
+	}
+	
+	public String getFizetesTranzakcioAuthorizationCode(Record record) {
+		return getFizetesTranzakcioOutput(record).getAuthorizationcode();
+	}
+	
+	public boolean fizetesTranzakcioBefejezodott(Record record) {
+		String responseCode = record.getResponsecode();
+		return responseCode != null && !responseCode.isEmpty();
+	}
+	
+	public boolean fizetesTranzakcioSikeres(Record record) {
+		String authorizationCode = getFizetesTranzakcioAuthorizationCode(record);
+		return Constants.successPosResponseCodes.contains(record.getResponsecode()) 
+				&& authorizationCode != null 
+				&& authorizationCode.matches("\\d+");
+	}
 	
 }

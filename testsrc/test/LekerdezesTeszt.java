@@ -2,6 +2,7 @@ package test;
 
 import hu.netfone.onlinepayment.otp.TranzakcioLekerdezes;
 
+import hu.iqsys.otp.webshoptranzakciolekerdezes.output.Record;
 import org.xml.sax.SAXException;
 
 import java.io.FileNotFoundException;
@@ -27,8 +28,30 @@ public class LekerdezesTeszt {
 			return;
 		}
 		
-		TranzakcioLekerdezes kliens = new TranzakcioLekerdezes(TestData.getPosConfig());
-		System.out.println("eredmeny: " + kliens.egyTranzakcioSikeres(tranzakcioId));
+		TranzakcioLekerdezes lekerdezes = new TranzakcioLekerdezes(TestData.getPosConfig());
+		
+		
+		lekerdezes.lekerdezesInditas(tranzakcioId);
+		
+		if (!lekerdezes.sikeres()) {
+			System.out.println("fizetés eredmény lekérdezés hiba");
+			return;
+		}
+		
+		Record valasz = lekerdezes.getFizetesTranzakcioSingleResult();
+
+		if (!lekerdezes.fizetesTranzakcioBefejezodott(valasz)) {
+			//Nincs még válasz
+			System.out.println("Nem fejeződött be a tranzakció");
+			return;
+		}
+		
+		if (lekerdezes.fizetesTranzakcioSikeres(valasz)) {
+			System.out.println("Sikeres tranzakció. resultcode: " + valasz.getResponsecode() 
+				+ "  auth kód:" + lekerdezes.getFizetesTranzakcioAuthorizationCode(valasz));
+		} else {
+			System.out.println("Sikertelen tranzakció. resultcode: " + valasz.getResponsecode());
+		}
 	}
 
 }
