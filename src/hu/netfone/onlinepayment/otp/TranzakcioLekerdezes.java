@@ -189,7 +189,7 @@ public class TranzakcioLekerdezes {
 		String authorizationCode = getFizetesTranzakcioAuthorizationCode(record);
 		return Constants.successPosResponseCodes.contains(record.getResponsecode()) 
 				&& authorizationCode != null 
-				&& authorizationCode.matches("\\d+");
+				&& !authorizationCode.isEmpty();
 	}
 	
 }
